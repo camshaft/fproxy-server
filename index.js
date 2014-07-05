@@ -25,7 +25,7 @@ module.exports = function(user, pass) {
     if (!host) return res.send(400);
 
     var proto = req.headers['x-forwarded-proto'] || 'http';
-    delete req.headers.host;
+    req.headers.host = '';
     delete req.headers['x-forwarded-proto'];
     proxy(proto + '://' + host, {timeout: false})(req, res, next);
   });
