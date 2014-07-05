@@ -8,12 +8,14 @@ module.exports = function(user, pass) {
   pass = pass || process.env.PROXY_PASSWORD;
 
   var auth = express.basicAuth(user, pass);
+
   app.use(function(req, res, next) {
-    var authHeader = req.headers.authorization;
-    req.headers.authorization = req.headers['proxy-authorization'] || authHeader;
-    delete req.headers['proxy-authorization'];
+    var orig = req.headers.authorization;
+    req.headers.authorization = req.headers['x-fproxy-authorization'] || orig;
+
     auth(req, res, function() {
-      req.headers.authorization = authHeader;
+      req.headers.authorization = orig;
+      delete req.headers['x-fproxy-authorization'];
       next.apply(null, arguments);
     });
   });
