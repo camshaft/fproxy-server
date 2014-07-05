@@ -19,7 +19,9 @@ module.exports = function(user, pass) {
   });
 
   app.use(function(req, res, next) {
-    var host = req.headers['x-host'];
+    var host = req.headers['x-fproxy-host'];
+    if (!host) return res.send(400);
+
     var proto = req.headers['x-forwarded-proto'] || 'http';
     delete req.headers.host;
     delete req.headers['x-forwarded-proto'];
